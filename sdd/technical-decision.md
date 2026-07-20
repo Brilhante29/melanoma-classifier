@@ -2,119 +2,103 @@
 
 ## Status
 
-Proposed
+Accepted
 
 ## Decision Type
 
-`<stack|api-style|cloud|messaging|database|library|runtime|framework>`
+stack
 
 ## Context
 
-Project: `<project-name>`
-Problem: `<problem to solve>`
-Portfolio program: `<program>`
-Public signal: `<GitHub/LinkedIn proficiency signal>`
-Benchmark: `<metric>`
+Project: `melanoma-classifier`
+Problem: Classify synthetic skin lesion images as malignant or benign using reproducible ML pipeline
+Portfolio program: applied-computer-vision
+Public signal: GitHub portfolio demonstrating medical vision classification with synthetic data
+Benchmark: AUC, sensitivity
 
 ## Selected Option
 
-Selected: `<option>`
+Selected: `scikit-learn LogisticRegression on handcrafted image features`
 
 Reason:
 
-`<Why this option fits the problem, benchmark, and public signal.>`
+Handcrafted features (asymmetry index, border irregularity, color variance, area, perimeter, circularity) encode domain knowledge from the ABCD rule of dermatology. LogisticRegression is fast, interpretable, and requires no GPU. This combination proves the classification claim without the overhead of deep learning.
 
 ## Decision Brain Fields
 
-- Stack profile: `<spring-kotlin-backend|fastapi-backend|go-backend|node-typescript-backend|angular|nextjs|python-ml|terraform>`
-- API style: `<rest-http|graphql|grpc|websocket|sse|cli>`
-- Messaging: `<none|outbox-only|rabbitmq|kafka|redis-streams|nats>`
-- Cloud mode: `<none|kumo-local-first|adapter-fake|real-cloud-required>`
-- Database/runtime: `<selection>`
-- Library policy: `<selection>`
+- Stack profile: python-ml
+- API style: cli
+- Messaging: none
+- Cloud mode: none
+- Database/runtime: none / Python CLI on Docker
+- Library policy: Pillow for image generation, numpy/scipy for feature computation, scikit-learn for classification/metrics
 
 ## Engineering Principles
 
 Coupling boundary:
 
-`<Domain/use cases must not depend on framework, DB, broker, cloud SDK, transport, or UI.>`
+Domain types depend only on standard library; feature extraction depends only on numpy/Pillow/scipy; classifier depends on scikit-learn; CLI depends on argparse.
 
 SOLID application:
 
-- SRP: `<how responsibilities are split>`
-- OCP: `<how behavior extends without rewriting stable policy>`
-- LSP: `<how adapters/fakes/reals stay substitutable>`
-- ISP: `<small ports/interfaces used>`
-- DIP: `<high-level policy depends on abstractions>`
+- SRP: fixture generates images, classifier extracts features and trains, benchmark orchestrates
+- OCP: add new features by extending extract_features(), new models by adding train_* functions
+- LSP: ClassificationResult and BenchmarkResult are frozen dataclasses — no substitution needed
+- ISP: small focused functions with narrow interfaces (extract_features returns ndarray, train_classifier returns Pipeline)
+- DIP: high-level benchmark depends on abstract feature extraction and training functions, not concrete implementations
 
 Simplicity:
 
-- KISS: `<simplest design that proves the claim>`
-- YAGNI: `<future abstraction intentionally not added>`
-- DRY: `<duplicated business knowledge removed without premature abstraction>`
+- KISS: generate blobs, compute 9 numeric features, train LogisticRegression — simplest design that proves the claim
+- YAGNI: no async, no web API, no database, no GPU — not needed for a reproducible benchmark
+- DRY: feature extraction logic lives in one place; benchmark orchestration in one function
 
 Testability evidence:
 
-- `<use case test without transport/infrastructure>`
-- `<adapter or contract test>`
+- domain.py tested via round-trip serialization
+- classifier.py tested via feature extraction on known synthetic images + train/predict accuracy check
+
 ## Rejected Options
 
 | Option | Why rejected |
 |---|---|
-| `<option>` | `<reason>` |
-| `<option>` | `<reason>` |
+| PyTorch/TIMM classifier | Requires GPU, increases Docker image size, adds training time. Handcrafted features + sklearn is sufficient for the benchmark. |
+| Real ISIC dataset | Introduces network dependency, licensing issues, and non-deterministic results. Synthetic data is fully reproducible. |
 
 ## API Contract
 
 Contract artifact:
 
-`<OpenAPI|GraphQL schema|protobuf|event contract|CLI output schema|none>`
-
-GraphQL controls, when applicable:
-
-- Query complexity/depth limit: `<yes|no|not applicable>`
-- N+1 prevention: `<DataLoader/batching plan|not applicable>`
-- Field-level auth rule: `<yes|no|not applicable>`
+CLI output schema — JSON benchmark result with fields: auc, sensitivity, specificity, accuracy, n_train, n_test, timestamp, command.
 
 ## Cloud Local-First
 
-Local provider:
+Local provider: none
 
-`<kumo|none|adapter fake>`
+Real provider target: none
 
-Real provider target:
+Config switch: none
 
-`<aws|none|other>`
-
-Config switch:
-
-```txt
-CLOUD_PROVIDER=<kumo|aws|none>
-CLOUD_ENDPOINT=http://localhost:4566
-```
-
-Unsupported local behaviors:
-
-- `<behavior or none>`
+Unsupported local behaviors: none
 
 ## Benchmark Impact
 
 Expected impact:
 
-- `<metric/result this decision should improve or clarify>`
+- AUC > 0.75 on held-out synthetic test set proves the classification pipeline works.
 
 Validation command:
 
 ```powershell
-<command>
+python -m melanoma_classifier benchmark --n-samples 500 --output benchmarks/results/baseline.json
 ```
 
 ## Operational Cost
 
-- Docker services added: `<none|kumo|postgres|redis|rabbitmq|redpanda|...>`
-- Local demo complexity: `<low|medium|high>`
-- Failure case required: `<yes|no>`
+- Docker services added: none (single-stage build)
+- Local demo complexity: low
+- Failure case required: no
 
 ## Follow-up
 
-- `<what must be revisited if benchmark fails>`
+- If AUC drops below 0.75 on new synthetic distributions, add more features or switch to RandomForest.

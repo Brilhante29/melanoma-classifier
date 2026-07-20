@@ -2,68 +2,82 @@
 
 ## Status
 
-Proposed
+Accepted
 
 ## Context
 
-Project: `<project-name>`
-Claim: `<measurable claim>`
-Benchmark: `<primary metric>`
+Project: `melanoma-classifier`
+Claim: `classificacao de lesao de pele`
+Benchmark: `AUC, sensitivity`
 
 Problem forces:
 
-- Domain complexity: `<low|medium|high>`
-- Integration pressure: `<low|medium|high>`
-- UI state complexity: `<low|medium|high|none>`
-- Data/ML reproducibility: `<low|medium|high>`
-- Auditability/event history: `<low|medium|high>`
-- Throughput/async pressure: `<low|medium|high>`
-- Independent deployability need: `<low|medium|high>`
+- Domain complexity: low
+- Integration pressure: low
+- UI state complexity: none
+- Data/ML reproducibility: high
+- Auditability/event history: medium
+- Throughput/async pressure: low
+- Independent deployability need: low
 
 ## Decision
 
-Chosen architecture: `<style>`
+Chosen architecture: `pipeline`
 
 Reason:
 
-`<Explain why this architecture fits the actual problem and benchmark.>`
+Synthetic image generation, feature extraction, classifier training, and evaluation form a natural four-stage pipeline. Each stage has a single responsibility and produces output consumed by the next stage. This matches the benchmark flow exactly — generate data, extract features, train model, evaluate — with no unnecessary indirection.
 
 Dependency rule:
 
-`<Example: domain/application do not depend on infra; adapters depend inward through ports.>`
+fixture depends only on Pillow/numpy; feature extraction depends on numpy/scipy/Pillow; classifier depends on scikit-learn; CLI depends on argparse; benchmark orchestrates the full pipeline.
 
 ## Rejected Alternatives
 
 | Alternative | Why rejected |
 |---|---|
-| `<style>` | `<reason>` |
-| `<style>` | `<reason>` |
+| hexagonal | No infrastructure or transport boundary to justify ports/adapters |
+| microservices | Single-machine classification pipeline has no deployment boundary |
 
 ## Folder Layout
 
 ```txt
 src/
-  <folders>
-test/
+  melanoma_classifier/
+    __init__.py
+    __main__.py
+    domain.py       # pure dataclasses
+    fixture.py      # synthetic lesion image generator
+    classifier.py   # feature extraction + sklearn classifier
+    benchmark.py    # benchmark orchestrator
+    cli.py          # argparse CLI
+tests/
+  test_domain.py
+  test_classifier.py
 benchmarks/
+  results/
+    baseline.json
 ```
 
 ## Testing Strategy
 
-- Unit tests: `<what is isolated>`
-- Integration tests: `<what is wired>`
-- Benchmark: `<what proves the claim>`
+- Unit tests: domain type round-trips, feature extraction shape/validity, classifier train/predict
+- Integration tests: full pipeline from synthetic image to classification (within tests)
+- Benchmark: end-to-end with 500 samples, measures AUC/sensitivity/specificity
 
 ## Consequences
 
 Positive:
 
-- `<benefit>`
+- Simple four-stage pipeline is easy to understand, test, and debug.
+- No GPU or deep learning dependency reduces build time and Docker image size.
+- Deterministic seed ensures fully reproducible benchmark results.
 
 Tradeoffs:
 
-- `<cost>`
+- Handcrafted features may not generalize to real clinical images, but this is acceptable for a synthetic benchmark proving the pipeline pattern.
 
 Migration path:
 
-- `<how to evolve if the problem grows>`
+- Replace fixture.py with real ISIC dataset loader for production use.
+- Replace handcrafted features with a CNN feature extractor (via TIMM) when higher accuracy is needed.

@@ -4,64 +4,64 @@ Project: `6 - melanoma-classifier`
 
 ## Principal Agent Summary
 
-- Objective:
-- Portfolio program:
-- Public proof claim:
-- Primary benchmark:
-- Default runnable path:
+- Objective: Implement synthetic skin lesion classification benchmark demonstrating reproducible ML pipeline
+- Portfolio program: applied-computer-vision
+- Public proof claim: classificacao de lesao de pele
+- Primary benchmark: AUC
+- Default runnable path: `docker run --rm melanoma-classifier`
 
 ## Subagent Decisions
 
 | Role | Decision | Evidence Path | Status |
 |---|---|---|---|
-| `program-planner` |  | `project.yaml`, `sdd/spec.md` | pending |
-| `architecture-selector` |  | `sdd/architecture-decision.md` | pending |
-| `engineering-principles-reviewer` |  | `project.yaml`, `sdd/technical-decision.md` | pending |
-| `stack-decision-agent` |  | `project.yaml`, `sdd/technical-decision.md` | pending |
-| `api-style-agent` |  | API or CLI contract | pending |
-| `cloud-local-first-agent` |  | Docker/Kumo/local adapter docs | pending |
-| `messaging-agent` |  | `sdd/technical-decision.md` | pending |
-| `language-profile-agent` |  | repo layout, tests, tooling | pending |
-| `benchmark-harness-agent` |  | `sdd/benchmark-plan.md`, `benchmarks/results/` | pending |
-| `design-system-agent` |  | `README.md`, diagrams | pending |
-| `security-reuse-reviewer` |  | `REFERENCES.md`, release checklist | pending |
-| `release-ci-publisher` |  | validation and CI | pending |
+| `program-planner` | applied-computer-vision | `project.yaml`, `sdd/spec.md` | done |
+| `architecture-selector` | pipeline (fixture -> features -> classifier -> eval) | `sdd/architecture-decision.md` | done |
+| `engineering-principles-reviewer` | SOLID applied, KISS followed | `project.yaml`, `sdd/technical-decision.md` | done |
+| `stack-decision-agent` | python, scikit-learn, pillow, numpy, scipy | `project.yaml`, `sdd/technical-decision.md` | done |
+| `api-style-agent` | CLI (argparse subcommands: demo, benchmark) | `cli.py` | done |
+| `cloud-local-first-agent` | none — no cloud dependency | Dockerfile | done |
+| `messaging-agent` | none | `sdd/technical-decision.md` | done |
+| `language-profile-agent` | python-ml | repo layout, tests | done |
+| `benchmark-harness-agent` | 500 samples, AUC/sensitivity JSON output | `sdd/benchmark-plan.md`, `benchmarks/results/baseline.json` | done |
+| `design-system-agent` | README with number, claim, benchmark card | `README.md` | done |
+| `security-reuse-reviewer` | no secrets, MIT license, referenced PIL/sklearn | `REFERENCES.md`, release checklist | done |
+| `release-ci-publisher` | CI passing, Docker build, tests green | `.github/workflows/ci.yml` | done |
 
 ## Local-First Runtime
 
-- Docker command:
-- Local services:
-- Kumo services, if any:
-- Real cloud adapter target, if any:
-- Config switch:
+- Docker command: `docker run --rm melanoma-classifier`
+- Local services: none
+- Kumo services, if any: none
+- Real cloud adapter target, if any: none
+- Config switch: none
 - Default path requires paid secret: no
 
 ## Architecture Boundaries
 
-- Domain boundaries:
-- Use-case boundaries:
-- Ports:
-- Adapters:
-- Dependency direction rule:
+- Domain boundaries: domain.py (pure types)
+- Use-case boundaries: benchmark.py orchestrates the pipeline
+- Ports: none (direct function calls)
+- Adapters: none
+- Dependency direction rule: fixture -> classifier -> benchmark -> CLI
 
 ## Benchmark Handoff
 
-- Metric:
-- Unit:
-- Higher or lower is better:
-- Command:
-- Result path:
-- Dataset or fixture:
+- Metric: AUC
+- Unit: unit
+- Higher or lower is better: higher
+- Command: `python -m melanoma_classifier benchmark --n-samples 500 --output benchmarks/results/baseline.json`
+- Result path: `benchmarks/results/baseline.json`
+- Dataset or fixture: synthetic Pillow-generated skin lesions
 
 ## Open Risks
 
-- 
+- None — synthetic data is deterministic and fully controlled.
 
 ## Publication Gates
 
-- [ ] Docker path works
-- [ ] benchmark result exists
-- [ ] README starts with number, claim, and benchmark
-- [ ] references are documented
-- [ ] no secret in files or git remote
-- [ ] validation passes
+- [x] Docker path works
+- [x] benchmark result exists
+- [x] README starts with number, claim, and benchmark
+- [x] references are documented
+- [x] no secret in files or git remote
+- [x] validation passes
