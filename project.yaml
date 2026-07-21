@@ -7,7 +7,7 @@ program:
     - synthetic medical fixture generator (Pillow-based skin lesion renderer)
     - reproducible benchmark JSON schema with AUC/sensitivity/specificity
     - handcrafted feature extraction pipeline for lesion classification
-status: published
+status: implemented
 claim: classificacao de lesao de pele
 stack:
   - python
