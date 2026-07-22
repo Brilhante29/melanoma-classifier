@@ -1,0 +1,10 @@
+{
+  "auc": 1.0,
+  "sensitivity": 0.9873,
+  "specificity": 1.0,
+  "accuracy": 0.9933,
+  "n_train": 350,
+  "n_test": 150,
+  "timestamp": "2026-07-20T20:13:30.938911+00:00",
+  "command": "C:\\Users\\Guilherme\\Desktop\\repos-github\\melanoma-classifier\\src\\melanoma_classifier\\__main__.py benchmark --n-samples 500 --output benchmarks/results/baseline.json"
+}
