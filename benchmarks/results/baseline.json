@@ -1,4 +1,8 @@
 {
+  "project": "melanoma-classifier",
+  "metric": "auc",
+  "value": 1.0,
+  "unit": "unit",
   "auc": 1.0,
   "sensitivity": 0.9873,
   "specificity": 1.0,
