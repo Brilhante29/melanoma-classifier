@@ -1,14 +1,46 @@
 {
-  "project": "melanoma-classifier",
+  "command": "/usr/local/lib/python3.12/site-packages/melanoma_classifier/__main__.py benchmark --dataset data/dermamnist.npz --output /tmp/baseline.json",
+  "dataset": {
+    "clinical_use": false,
+    "license": "CC BY-NC 4.0",
+    "name": "DermaMNIST v2.1",
+    "sha256": "1a309fec2e33bb6aba88e7d078e5ccbb9736c84a0b415ac197eb3c8fa331e050",
+    "source": "MedMNIST v2 / HAM10000",
+    "split": "official train/validation/test"
+  },
+  "environment": {
+    "machine": "x86_64",
+    "numpy": "2.0.2",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+    "python": "3.12.13",
+    "scikit_learn": "1.7.2"
+  },
+  "failures": 0,
+  "measured_iterations": 2005,
   "metric": "auc",
-  "value": 1.0,
-  "unit": "unit",
-  "auc": 1.0,
-  "sensitivity": 0.9873,
-  "specificity": 1.0,
-  "accuracy": 0.9933,
-  "n_train": 350,
-  "n_test": 150,
-  "timestamp": "2026-07-20T20:13:30.938911+00:00",
-  "command": "C:\\Users\\Guilherme\\Desktop\\repos-github\\melanoma-classifier\\src\\melanoma_classifier\\__main__.py benchmark --n-samples 500 --output benchmarks/results/baseline.json"
+  "project": "melanoma-classifier",
+  "repeat": 1,
+  "samples": [
+    0.736999
+  ],
+  "summary": {
+    "accuracy": 0.6169576059850375,
+    "auc": 0.7369987870735255,
+    "duration_seconds": 10.392612,
+    "false_negative": 53,
+    "false_positive": 715,
+    "minimum_validation_sensitivity": 0.8,
+    "sensitivity": 0.7623318385650224,
+    "specificity": 0.5987654320987654,
+    "test_images": 2005,
+    "test_melanoma_images": 223,
+    "threshold": 0.31671588419047597,
+    "train_images": 7007,
+    "true_negative": 1067,
+    "true_positive": 170,
+    "validation_images": 1003
+  },
+  "timestamp": "2026-08-09T22:54:33.658548Z",
+  "unit": "ratio",
+  "value": 0.736999
 }

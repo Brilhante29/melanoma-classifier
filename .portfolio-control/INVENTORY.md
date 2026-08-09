@@ -1,21 +1,14 @@
 # Portfolio Control: #6 melanoma-classifier
 
-## Identity
-
-- **Program:** <program>
-- **Status:** scaffold
-- **Proves:** classificacao de lesao de pele
-- **Primary benchmark:** `auc`
-
-## Evidence Map
+- **Program:** applied-computer-vision
+- **Status:** benchmarked; provenance-rich V2 pending
+- **Proves:** leakage-aware melanoma-versus-rest evaluation on official DermaMNIST splits
+- **Primary benchmark:** test ROC AUC; sensitivity, specificity and confusion matrix support it
 
 | Evidence | Location | State |
 |---|---|---|
-| Specification | `sdd/spec.md` | required |
-| Architecture decision | `sdd/architecture-decision.md` | required |
-| Benchmark plan | `sdd/benchmark-plan.md` | required |
-| Benchmark result | `benchmarks/results/` | pending |
-| OpenSpec verification | `openspec/artifacts/verification.md` | required |
-| Reuse review | `sdd/reuse-improvement-review.md` | required |
-
-This file is the project-level inventory. Update it whenever a new proof artifact, reusable component, or architectural decision appears.
+| Dataset source, license and hashes | `data/` | complete |
+| Specification and decisions | `sdd/`, `openspec/artifacts/` | complete |
+| Raw benchmark | `benchmarks/results/baseline.json` | measured |
+| Publication evidence | `benchmarks/publication/melanoma-baseline-v2.json` | pending source-image run |
+| Reuse review | `sdd/reuse-improvement-review.md` | complete |

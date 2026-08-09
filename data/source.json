@@ -1,0 +1,17 @@
+{
+  "name": "DermaMNIST",
+  "version": "MedMNIST v2.1",
+  "record": "https://zenodo.org/records/6496656",
+  "download": "https://zenodo.org/records/6496656/files/dermamnist.npz?download=1",
+  "bytes": 19725078,
+  "md5": "0744692d530f8e62ec473284d019b0c7",
+  "sha256": "1a309fec2e33bb6aba88e7d078e5ccbb9736c84a0b415ac197eb3c8fa331e050",
+  "license": "CC BY-NC 4.0",
+  "source_dataset": "HAM10000",
+  "splits": {
+    "train": 7007,
+    "validation": 1003,
+    "test": 2005
+  },
+  "clinical_use": false
+}

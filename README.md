@@ -1,62 +1,61 @@
 # #6 melanoma-classifier
 
-**Status:** benchmarked
+**Measured baseline:** test AUC `0.7370`, sensitivity `0.7623`, specificity `0.5988`, and accuracy `0.6170` on `2,005` official DermaMNIST test images.
 
-**Proves:** classificacao de lesao de pele via synthetic image generation, handcrafted feature extraction, and sklearn classification.
+**Proves:** a leakage-aware melanoma-vs-rest evaluation pipeline trains on the official DermaMNIST training split, selects its operating threshold only on validation data, and reports untouched test performance with dataset provenance.
 
-**Benchmark result (500 synthetic samples, held-out 30%):**
+## Evidence
 
-| Metric | Value |
+| Measure | Result |
 |---|---:|
-| AUC | 1.0 |
-| Sensitivity | 0.9873 |
-| Specificity | 1.0 |
-| Accuracy | 0.9933 |
+| Test ROC AUC | `0.7370` |
+| Sensitivity | `0.7623` |
+| Specificity | `0.5988` |
+| Accuracy | `0.6170` |
+| Test images | `2,005` |
+| Melanoma test images | `223` |
+| Confusion matrix `TN / FP / FN / TP` | `1067 / 715 / 53 / 170` |
 
-**Stack:** python, pillow, numpy, scikit-learn, scipy, docker (no GPU required)
-
-## Quick Start
-
-```bash
-pip install -e .
-python -m melanoma_classifier demo
-```
+The prior synthetic generator produced AUC `1.0` because labels directly controlled the same visual features measured by the classifier. That circular result was removed. The current number comes from real 28x28 dermatoscopic images in DermaMNIST v2.1.
 
 ## Run
 
 ```bash
 docker build -t melanoma-classifier .
-docker run --rm melanoma-classifier
+docker run --rm --network none melanoma-classifier
 ```
 
-## Benchmark
+The image includes the verified 19.7 MB dataset archive, so the benchmark opens no network connection and needs no credential.
 
-```bash
-python -m melanoma_classifier benchmark --n-samples 500 --output benchmarks/results/baseline.json
+## Method
+
+```mermaid
+flowchart LR
+  Data["DermaMNIST v2.1 archive"] --> Verify["SHA-256 + split contract"]
+  Verify --> Train["7,007 train images"]
+  Verify --> Validation["1,003 validation images"]
+  Verify --> Test["2,005 untouched test images"]
+  Train --> Model["Balanced logistic regression"]
+  Validation --> Threshold["Sensitivity-target threshold"]
+  Model --> Threshold
+  Threshold --> Test
+  Test --> Evidence["AUC + confusion matrix"]
 ```
 
-Or via Docker:
+Images are pooled to 14x14 RGB plus channel moments. A class-balanced logistic regression provides a small, interpretable CPU baseline. The threshold maximizes validation specificity subject to sensitivity at least `0.8`; the test split is used only once for final metrics.
 
-```bash
-docker run --rm melanoma-classifier benchmark --n-samples 500 --output /app/benchmarks/results/baseline.json
-```
+## Data And Safety
 
-## Architecture
+DermaMNIST is derived from HAM10000 and redistributed under **CC BY-NC 4.0**. The archive MD5 matches the official Zenodo record and its SHA-256 is versioned in `data/source.json`.
 
-Pipeline: `synthetic fixture -> extract 9 handcrafted features -> LogisticRegression -> evaluation`
+This reduced-resolution educational benchmark is **not intended for clinical use**. It does not establish diagnostic safety, demographic fairness, calibration, external-site generalization, or medical-device performance.
 
-Features follow the ABCD rule: asymmetry, border irregularity, color variance, diameter (area/perimeter/circularity).
+## Reproducibility
 
-## Tests
+- Dataset: 7,007 train / 1,003 validation / 2,005 test images.
+- Runtime: Python `3.12.13`, NumPy `2.0.2`, scikit-learn `1.7.2`.
+- Raw result: `benchmarks/results/baseline.json`.
+- Publication config: `benchmarks/config/dermamnist-v1.json`.
+- Dataset hash: `1a309fec2e33...`.
 
-```bash
-pytest tests/ -v
-```
-
-## References
-
-See REFERENCES.md. Implementation, fixtures, and results are project-specific.
-
-## Post Angle
-
-#6 melanoma-classifier: AUC 1.0, sensitivity 0.987 as a reproducible portfolio benchmark using synthetic images and handcrafted features — no GPU, no real data, no secrets.
+See [REFERENCES.md](REFERENCES.md) and [data/LICENSE.md](data/LICENSE.md).

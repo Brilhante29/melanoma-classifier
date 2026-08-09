@@ -1,0 +1,16 @@
+{
+  "project": "melanoma-classifier",
+  "benchmark_id": "dermamnist-melanoma-vs-rest-v1",
+  "primary_metric": "auc",
+  "v1_path": "benchmarks/results/baseline.json",
+  "v2_path": "benchmarks/publication/melanoma-baseline-v2.json",
+  "config_path": "benchmarks/config/dermamnist-v1.json",
+  "fixture_path": "data",
+  "lock_path": "requirements.txt",
+  "repeat": 1,
+  "measured_iterations": 2005,
+  "warmup_iterations": 0,
+  "concurrency": 1,
+  "comparability_key": "melanoma:dermamnist-v2.1:logreg:test-auc",
+  "readme_values": ["0.7370", "0.7623", "2,005", "CC BY-NC 4.0"]
+}

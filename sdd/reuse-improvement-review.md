@@ -9,31 +9,31 @@ Project: `6 - melanoma-classifier`
 - [x] after first working slice
 - [x] after benchmark result
 - [x] before publication
-- [ ] after CI failure, if applicable
 
 ## Findings
 
 | Finding | Classification | Kit Area | Action | Status |
 |---|---|---|---|---|
-| Pillow-based synthetic medical image generator pattern could be reused across medical vision projects | `patch_now` | `component-packs/applied-computer-vision/fixture` | Extracted to kit as reusable medical image fixture module | patched |
-| Handcrafted feature extraction for lesion classification follows ABCD rule — reusable baseline | `backlog` | `component-packs/applied-computer-vision/features` | Low priority — will revisit when second medical vision project starts | recorded |
-| Benchmark JSON schema (auc, sensitivity, specificity, accuracy) matches stroke-signal-demo pattern | `patch_now` | `harness/benchmark-schema` | Standardized JSON schema across portfolio medical projects | patched |
+| A medical benchmark needs dataset source, license, archive hash, split sizes and clinical-use limits in one contract. | `patch_now` | medical evaluation standard | Add these fields to the reusable publication and review guidance. | queued in this macro |
+| Threshold selection must use validation data only; final test data is evaluation-only. | `patch_now` | medical evaluation standard | Record the leakage boundary as a reusable gate. | queued in this macro |
+| A confusion matrix needs the positive-class definition and sample counts beside AUC and sensitivity. | `patch_now` | benchmark contract | Preserve class ID, TN/FP/FN/TP and split counts in machine-readable evidence. | implemented locally; kit patch queued |
 
 ## Patch Now Decisions
 
-- Created reusable medical image fixture pattern in applied-computer-vision component pack
-- Standardized benchmark JSON schema for medical ML projects
+- Reuse the dataset provenance, licensing, split-isolation and metric-contract rules.
+- Reject the removed synthetic generator as reusable medical evidence because its labels controlled its measured visual features.
 
 ## Backlog Decisions
 
-- Handcrafted feature extraction module: revisit when adding a 3rd medical vision project
+- Generalize image-feature extraction only after a second real dataset uses the same representation and tests.
 
 ## Rejected Improvements
 
-- None
+- DermaMNIST loading, melanoma class ID, pooled RGB features and logistic-regression choices remain project specific.
+- The prior synthetic medical fixture and its AUC 1.0 claim are explicitly rejected, not promoted to the kit.
 
 ## Final Gate
 
 - [x] Reusable improvements were patched or recorded.
 - [x] Project-specific implementation was not moved into the kit.
-- [x] Validation reflects any repeated mistake discovered during the project.
+- [x] Validation reflects the circular-synthetic-score and test-leakage risks discovered here.

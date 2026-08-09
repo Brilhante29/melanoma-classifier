@@ -1,25 +1,12 @@
-# Reuse Map: #<id> <project-name>
+# Reuse Map: #6 melanoma-classifier
 
-## Kit Inputs
-
-| Concern | Source of truth | Project use |
+| Kit input or delta | Use | Resolution |
 |---|---|---|
-| Agent skills | `.codex/skills/` and `.claude/skills/` | select by problem and language |
-| Architecture | `decision-brain/` | record the chosen shape in SDD |
-| Stack and libraries | `.portfolio/decision-brain/` | justify against the benchmark |
-| Local-first cloud | `.portfolio/decision-brain/cloud-matrix.yaml` | keep provider ports replaceable |
-| API style | `decision-brain/api-style-matrix.yaml` | REST, GraphQL, gRPC, or events by need |
-| Messaging | `decision-brain/messaging-matrix.yaml` | Kafka/RabbitMQ only with a measured reason |
-| Benchmark contract | `contracts/benchmark-result.schema.json` | emit machine-readable evidence |
+| Python ML and computer-vision profiles | package, test and Docker conventions | reused |
+| medical evaluation contract | class definition, AUC, sensitivity and confusion matrix | improve kit now |
+| dataset provenance contract | source, license, archive hash and split sizes | improve kit now |
+| validation/test isolation | prevent threshold leakage | improve kit now |
+| DermaMNIST loader and image features | specific to this baseline | keep local |
+| removed synthetic medical generator | produced circular AUC 1.0 | reject from reuse |
 
-## Project Delta
-
-List only what this project adds to the kit. If a pattern will be useful in another repository, patch the kit and link the change here instead of hiding it in project code.
-
-| Delta | Why it is project-specific or reusable | Action |
-|---|---|---|
-| _pending_ | _pending_ | `patch_now`, `backlog`, or `reject` |
-
-## Coupling Rule
-
-Domain code must not depend on infrastructure adapters, providers, brokers, HTTP frameworks, or model vendors. Dependencies point inward through stable ports. Reuse is accepted only when it reduces duplication without making the problem less clear.
+Only evidence and leakage-prevention rules are reusable. Dataset-specific transformations and estimator choices remain local.

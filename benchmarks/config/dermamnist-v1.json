@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "benchmark_id": "dermamnist-melanoma-vs-rest-v1",
+  "workload_version": "dermamnist-v2.1-official-splits",
+  "dataset_sha256": "1a309fec2e33bb6aba88e7d078e5ccbb9736c84a0b415ac197eb3c8fa331e050",
+  "melanoma_class_id": 4,
+  "minimum_validation_sensitivity": 0.8,
+  "seed": 42,
+  "test_images": 2005,
+  "comparability_key": "melanoma:dermamnist-v2.1:logreg:test-auc"
+}

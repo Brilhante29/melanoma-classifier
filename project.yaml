@@ -2,35 +2,26 @@ id: 6
 name: melanoma-classifier
 program:
   id: applied-computer-vision
-  narrative_fit: Proves that synthetic skin lesion images with handcrafted features (asymmetry, border irregularity, color) can train a reproducible classifier, eliminating dependency on real clinical data for benchmark validation.
+  narrative_fit: Adds a real dermatoscopic vertical with official splits, dataset provenance, validation-only threshold selection, and test AUC.
   shared_assets:
-    - synthetic medical fixture generator (Pillow-based skin lesion renderer)
-    - reproducible benchmark JSON schema with AUC/sensitivity/specificity
-    - handcrafted feature extraction pipeline for lesion classification
+    - dataset source and license manifest
+    - train-validation-test leakage boundary
+    - medical confusion matrix contract
+    - benchmark result v2 publication
 status: benchmarked
-claim: classificacao de lesao de pele
+claim: Measures a non-clinical melanoma-vs-rest baseline on the official DermaMNIST v2.1 splits without test-set threshold leakage.
 stack:
-  - python
-  - scikit-learn
-  - pillow
-  - numpy
-  - scipy
+  - python-3.12.13
+  - numpy-2.0.2
+  - scipy-1.15.3
+  - scikit-learn-1.7.2
+  - dermamnist-v2.1
   - docker
 language_profile:
   primary: python-ml
   secondary: []
-  reason: Python with scikit-learn is the standard for ML classification benchmarks; Pillow handles synthetic image generation; handcrafted features avoid deep learning complexity.
+  reason: NumPy and scikit-learn provide a transparent CPU baseline over a standard biomedical vision dataset.
 decision_brain:
-  agentic_spec:
-    source: .portfolio/decision-brain/agentic-spec-governance.yaml
-    spec_store: portfolio-reuse-kit
-    schema: portfolio-system
-    project_config: openspec/config.yaml
-    component_pack: applied-computer-vision
-    artifact_graph:
-      - intent->portfolio-impact->architecture-record
-      - architecture-record+portfolio-impact->component-pack
-      - component-pack->reuse-delta->benchmark-proof->tasks->verification
   agent_graph:
     mode: principal-agent-orchestrated
     source: .portfolio/decision-brain/agent-graph.yaml
@@ -39,70 +30,57 @@ decision_brain:
   reuse_improvement_loop:
     source: .portfolio/decision-brain/reuse-improvement-loop.yaml
     review_path: sdd/reuse-improvement-review.md
-    current_status: recorded
+    current_status: synthetic-oracle-removed
   principles:
-    coupling_rule: domain types depend only on standard library; feature extraction depends only on numpy/Pillow/scipy; classifier depends on scikit-learn; CLI depends on argparse.
+    coupling_rule: Dataset loading, feature extraction, model fitting, threshold selection, and test evaluation are separate stages with explicit arrays between them.
     solid: [srp, ocp, lsp, isp, dip]
-    simplicity_rule: one synthetic fixture generator, one feature extraction pipeline, one sklearn classifier, one JSON benchmark output prove the claim without GPU or deep learning.
-    testability_rule: domain, feature extraction, and classification run with synthetic images; no network, database, or cloud dependency required.
-    rejected_overengineering:
-      - PyTorch/TIMM deep learning model
-      - real clinical image dataset download
-      - GPU training
-      - model serving API or web interface
+    simplicity_rule: Use one official dataset, one binary question, one transparent baseline, and one fixed evaluation protocol.
+    testability_rule: Unit tests use tiny arrays; Docker validates the real archive and full official splits.
+    rejected_overengineering: [deep-learning, gpu, api, database, broker, cloud, experiment-tracker]
   stack_profile: python-ml
   api_style: cli
   messaging: none
   cloud:
     mode: none
-    local_provider: none
+    local_provider: docker
     real_provider_target: none
-    emulated_services: []
-    adapter_rule: no cloud dependency; all data is synthetic and local
-    config_switch: none
-    unsupported_behaviors: []
+    adapter_rule: Dataset is committed and hash-verified; no runtime cloud behavior exists.
   database: none
-  runtime: Python CLI in a slim Docker image; scikit-learn LogisticRegression with deterministic seed.
-  library_policy: scikit-learn for classification and metrics; Pillow for synthetic image generation; numpy/scipy for feature computation; argparse for CLI; no other runtime dependencies.
+  runtime: Non-root CPU Docker benchmark with no runtime network.
+  library_policy: Use NumPy for vectorized image features and scikit-learn for a class-balanced, interpretable baseline; avoid a deep model until its added cost is a measured question.
   record_path: sdd/technical-decision.md
-  rejected_options:
-    - option: PyTorch/TIMM deep learning classifier
-      reason: Deep learning adds GPU dependency and training time without improving the benchmark claim; handcrafted features + LogisticRegression are sufficient to prove reproducible lesion classification.
-    - option: Real ISIC dataset download
-      reason: External datasets introduce reproducibility risk and network dependency; synthetic fixtures are deterministic, local, and prove the pipeline works.
 architecture:
   style: pipeline
-  reason: Synthetic image generation, feature extraction, classifier training, and evaluation form a natural four-stage pipeline from synthetic input to benchmark output.
-  problem_forces:
-    domain_complexity: low
-    integration_pressure: low
-    ui_state_complexity: none
-    data_or_ml_reproducibility: high
-    auditability: medium
-    throughput_or_async: low
-    independent_deployability: low
-  dependency_rule: fixture depends only on Pillow/numpy; feature extraction depends on numpy/scipy/Pillow; classifier depends on scikit-learn; CLI depends on argparse; benchmark orchestrates the full pipeline.
+  reason: The dominant force is leakage-safe progression from versioned data through training and validation-only threshold selection to untouched test evidence.
+  dependency_rule: Test evaluation never participates in model fitting or threshold selection.
   boundaries:
-    - fixture owns synthetic lesion image generation with deterministic seed
-    - classifier owns feature extraction and model training
-    - benchmark owns orchestration, evaluation, and JSON output
-    - cli owns command-line interface
-  rejected_alternatives:
-    - style: hexagonal
-      reason: There is no infrastructure or transport boundary to justify ports and adapters; a four-stage pipeline is sufficient.
-    - style: microservices
-      reason: A single-machine classification pipeline has no deployment boundary worth splitting.
+    - dataset archive integrity and split contract
+    - vectorized image feature extraction
+    - class-balanced model training
+    - validation-only threshold selection
+    - untouched test evaluation
+dataset:
+  name: DermaMNIST
+  version: v2.1
+  source: https://zenodo.org/records/6496656
+  license: CC BY-NC 4.0
+  sha256: 1a309fec2e33bb6aba88e7d078e5ccbb9736c84a0b415ac197eb3c8fa331e050
+  clinical_use: false
 design_system:
   tokens: .portfolio/design-system/tokens.yaml
   readme_components: [readme_header, benchmark_card, architecture_card, references_table]
   diagram_required: true
+reuse:
+  kit_version: local
+  uses: [programs, decision-brain, architecture, python-computer-vision, medical-evaluation, design-system, sdd, benchmark-contract, skills]
 benchmark:
   primary_metric: auc
-  unit: unit
-  command: "python -m melanoma_classifier benchmark --n-samples 500 --output benchmarks/results/baseline.json"
+  unit: ratio
+  command: docker run --rm --network none melanoma-classifier
   result_path: benchmarks/results/baseline.json
+  evidence_status: current
 release:
-  docker: "docker run --rm melanoma-classifier"
+  docker: docker run --rm --network none melanoma-classifier
   no_secret_default_path: true
   readme_has_number: true
   references_documented: true
