@@ -1,5 +1,5 @@
 {
-  "command": "/usr/local/lib/python3.12/site-packages/melanoma_classifier/__main__.py benchmark --dataset data/dermamnist.npz --output /tmp/baseline.json",
+  "command": "/usr/local/lib/python3.12/site-packages/melanoma_classifier/__main__.py benchmark --output /tmp/baseline.json",
   "dataset": {
     "clinical_use": false,
     "license": "CC BY-NC 4.0",
@@ -26,7 +26,7 @@
   "summary": {
     "accuracy": 0.6169576059850375,
     "auc": 0.7369987870735255,
-    "duration_seconds": 10.392612,
+    "duration_seconds": 11.286766,
     "false_negative": 53,
     "false_positive": 715,
     "minimum_validation_sensitivity": 0.8,
@@ -40,7 +40,7 @@
     "true_positive": 170,
     "validation_images": 1003
   },
-  "timestamp": "2026-08-09T22:54:33.658548Z",
+  "timestamp": "2026-08-09T23:20:33.051365Z",
   "unit": "ratio",
   "value": 0.736999
 }

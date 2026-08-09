@@ -1,0 +1,65 @@
+{
+  "benchmark_id": "dermamnist-melanoma-vs-rest-v1",
+  "comparability_key": "melanoma:dermamnist-v2.1:logreg:test-auc",
+  "environment": {
+    "architecture": "amd64",
+    "hardware_class": "docker-desktop-cpu",
+    "runtime": "python-3.12.13+scikit-learn-1.7.2"
+  },
+  "execution": {
+    "command": "docker run --name pub_melanoma_feb0c3f --network none melanoma-classifier:source-feb0c3f benchmark --output /tmp/baseline.json",
+    "duration_seconds": 13.51269,
+    "exit_code": 0,
+    "repeat": 1,
+    "started_at": "2026-08-09T23:20:19.788190Z"
+  },
+  "metrics": [
+    {
+      "direction": "higher_is_better",
+      "failures": 0,
+      "name": "auc",
+      "samples": [
+        0.736999
+      ],
+      "summary": {
+        "accuracy": 0.6169576059850375,
+        "auc": 0.7369987870735255,
+        "duration_seconds": 11.286766,
+        "false_negative": 53,
+        "false_positive": 715,
+        "minimum_validation_sensitivity": 0.8,
+        "sensitivity": 0.7623318385650224,
+        "specificity": 0.5987654320987654,
+        "test_images": 2005,
+        "test_melanoma_images": 223,
+        "threshold": 0.31671588419047597,
+        "train_images": 7007,
+        "true_negative": 1067,
+        "true_positive": 170,
+        "validation_images": 1003
+      },
+      "unit": "ratio",
+      "value": 0.736999
+    }
+  ],
+  "project": "melanoma-classifier",
+  "provenance": {
+    "artifact_digest": "sha256:130ada44c0d5bf8f65b33b88b192fb4aa424b1acf37a7c1cd69eeff50de0f9d6",
+    "clean_tree": true,
+    "dependency_lock_digest": "sha256:fe0b6f50f1a0e103117966b8b28181663db1bf78219093e396a1598a4151243f",
+    "image_digest": "sha256:d2c10ac74664033741a3ce6b44862af0246ce4a701942d7e5945ea0e25477db4",
+    "image_ref": "melanoma-classifier:source-feb0c3f@sha256:d2c10ac74664033741a3ce6b44862af0246ce4a701942d7e5945ea0e25477db4",
+    "producer": "local",
+    "source_commit": "feb0c3fd8b10d3144df74808f489956967c8457d"
+  },
+  "run_id": "d97d4cb7-c87f-4df5-91ce-073c092f01bc",
+  "schema_version": 2,
+  "workload": {
+    "concurrency": 1,
+    "config_digest": "sha256:ecfc54d0d54a95aecd92822214dd25d36bcefc618f9b86a0989c83a4f5400333",
+    "fixture_digest": "sha256:aaa0eb53ac221888cfbe5826fe8e496284cfff4548d4a6ea20c11f0611e213c8",
+    "measured_iterations": 2005,
+    "version": "1.0.0",
+    "warmup_iterations": 0
+  }
+}

@@ -7,7 +7,7 @@
 - [x] The full Docker benchmark runs offline and emits the complete confusion matrix.
 - [x] README numbers match raw evidence.
 - [x] Dataset source, CC BY-NC 4.0 terms and non-clinical scope are explicit.
-- [ ] Provenance-rich V2 evidence exists and validates against Git blobs and the OCI image.
-- [ ] Exact-head GitHub Actions passes after the V2 publication commit.
+- [x] Provenance-rich V2 validates against source `feb0c3f`, committed Git blobs and image `sha256:d2c10ac7466...`.
+- [x] Exact source-head GitHub Actions passed in run `31341452550`; the central registry records final publication-head CI.
 
-The final two gates are completed only after source CI, immutable-image execution and publication CI.
+Final exact-head publication status remains external to the commit and is recorded centrally after push.
