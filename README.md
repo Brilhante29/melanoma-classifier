@@ -32,7 +32,7 @@ An earlier synthetic generator reached AUC `1.0` because the labels controlled t
 | Melanoma test images | `223` |
 | Confusion matrix `TN / FP / FN / TP` | `1067 / 715 / 53 / 170` |
 
-How to read it: the model catches 170 of 223 melanomas at the cost of 715 false alarms. That is the expected trade-off for a sensitivity-first threshold on a linear model over 14x14 pooled pixels, and it is the gap a convolutional model is expected to close under the same protocol.
+**How to read it:** the model catches 170 of 223 melanomas at the cost of 715 false alarms. That is the expected trade-off for a sensitivity-first threshold on a linear model over 14x14 pooled pixels, and it is the gap a convolutional model is expected to close under the same protocol.
 
 ## Quickstart
 
